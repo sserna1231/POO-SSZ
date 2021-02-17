@@ -7,10 +7,6 @@ typedef struct{
     float height;
 } Customer_t;
 
-void appIVA(double& price){
-    price += IVA * price;
-}
-
 int readInfo(Customer_t &c){
     std::cout << "Enter your age: ";
     std::cin >> c.age;
@@ -51,12 +47,5 @@ int main(){
     if(readInfo(client))
         std::cout << "Client info couldn't be read\n";
     else displayInfo(client);
-
-    double prodPrice;
-    std::cout << "Insert a product price: ";
-    std::cin >> prodPrice; 
-    appIVA(prodPrice);
-    std::cout << "The total price including IVA is: "
-        << prodPrice << std::endl; 
     return 0;
 }
