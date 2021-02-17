@@ -1,5 +1,4 @@
 #include <iostream>
-constexpr double IVA = 0.16;
 
 typedef struct{
     int age; 
