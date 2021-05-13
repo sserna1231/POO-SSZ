@@ -26,7 +26,7 @@ float Mayor13::jugar(float gonzosApostar) {
                     if (numeroJugador < numli || numeroJugador > numls)
                         cout << "Numero invalido. Debe estar en [" << numli << ", " << numls << "]\n";
                 } while (numeroJugador < numli || numeroJugador > numls);
-                numeroCasino = 1 + rand() % (numls + 1);// numeros de 1 a 13
+                numeroCasino = numli + rand() % (numls + numli);// numeros de 1 a 13
 
                 cout << "Tu numero aleatorio es: " << numeroJugador << "\n" << "Tu color: " << colorJugador << "\n";
                 cout << "Numero casino: " << numeroCasino << "\n" << "Color casino: " << colorCasino << "\n";

@@ -154,8 +154,15 @@ void View::recargarGonzos(){
     long id;
     cout << "Ingrese el id del jugador a recargar saldo: ";
     cin >> id;
+    float cash;
+    do{
+        cout << "Inserte cantidad de efectivo [dinero]: ";
+        cin >> cash;
+        if(cash <= 0)
+            cout << "Cifra invalida. Valor negativo o vacio\n";
+    } while(cash <= 0);
     try{
-        controller.recargarGonzos(id);   
+        controller.recargarGonzos(id, cash, true);
     }catch(std::domain_error ex){
         cout << "ERROR: " << ex.what() << endl;
     }

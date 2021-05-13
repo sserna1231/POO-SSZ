@@ -15,8 +15,10 @@ private:
     static constexpr int numli = 1;
     static constexpr int numls = 13;
     int colorJugador, colorCasino;
+    
 protected:
     float calcularResultado(float gonzosApostar) override;
+
 public:
     Mayor13();
     Mayor13(string);

@@ -23,6 +23,9 @@ class Controller
 {
 private:
     Casino casino;
+    static constexpr int numli = 1;
+    static constexpr int win_limit = 5;
+    static constexpr int numls = 10;
 
 public:
     Controller();
@@ -33,6 +36,7 @@ public:
     bool verPuedeContinuar(int idJugador); // True si tiene saldo para jugar, false en caso contrario
     void verInfoJugador(long idJugador);
     void retirarJugador(long idJugador);
-    void recargarGonzos(long idJugador);
+    void recargarGonzos(long idJugador, float cash);
+    void recargarGonzos(long idJugador, float cash, bool bonus=false);
 };
 #endif //CASINO_CONTROLLER_H
