@@ -12,7 +12,7 @@ float Mayor13::jugar(float gonzosApostar) {
     srand(time(NULL));
     int opc;
     do {
-        cout << "Que desea hacer?\n\n1. Rendirse [perderá la mitad de lo apostado]\n";
+        cout << "Que desea hacer?\n\n1. Rendirse [perdera la mitad de lo apostado]\n";
         cout << "2. Jugar\n\n> ";
         cin >> opc;
 
@@ -28,8 +28,8 @@ float Mayor13::jugar(float gonzosApostar) {
                 } while (numeroJugador < numli || numeroJugador > numls);
                 numeroCasino = numli + rand() % (numls + numli);// numeros de 1 a 13
 
-                cout << "Tu numero aleatorio es: " << numeroJugador << "\n" << "Tu color: " << colorJugador << "\n";
-                cout << "Numero casino: " << numeroCasino << "\n" << "Color casino: " << colorCasino << "\n";
+                cout << "Tu numero aleatorio es: " << numeroJugador << "\n";
+                cout << "Numero casino: " << numeroCasino << "\n";
                 break;
             default:
                 cout << "Opcion incorrecta\n\n";

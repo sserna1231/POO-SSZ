@@ -57,10 +57,14 @@ void View:: jugarView(long idJugador) {
     int idJuego;
     do{
         try {
-            do {
+            do{
                 cout << "Cuantos gonzos desea apostar \n";
                 cin >> cantGonzos;
                 if( cantGonzos <= 0) cout << "Cantidad invalida\n\n";
+                if( !controller.verPuedeContinuar(idJugador, cantGonzos) )
+                    throw std::domain_error("No tienes saldo suficiente");
+                if( !controller.verPuedeContinuar() )
+                    throw std::domain_error("No te queda saldo. Recarga primero");
             } while (cantGonzos <= 0);
 
             // Agregue el esto de la logica para el juego 1. Juego mayor a 13, 2 juego de dos colores.
@@ -68,7 +72,9 @@ void View:: jugarView(long idJugador) {
                 controller.mostrarJuegos();
                 cout << "Digite el numero del juego [Salir -> 0]: ";
                 cin >> opcion;
-                if( opcion != 0) controller.jugar(opcion - 1, idJugador, cantGonzos);
+                bool win;
+                if( opcion != 0) win = controller.jugar(opcion, idJugador, cantGonzos);
+                win ? cout << "Felicidades!!!\n" : cout << "Suerte para la proxima\n";
             } while( opcion != 0);
 
         } catch (std::domain_error ex){
@@ -120,7 +126,6 @@ void View::verPrincipal()
                 break;
             case 0:
                 cout << "Saliendo...\n";
-                cin.get();
                 break;
             default:
                 cout << "Opcion invalida\n\n";

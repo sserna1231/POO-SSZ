@@ -14,7 +14,7 @@ class GuessNum: public Juego
 {
 private:
     static constexpr int minrange = 1;
-    static constexpr int manrange = 15;
+    static constexpr int maxrange = 15;
     static constexpr int tries = 3;
     int numRandom, numPlayer;
 

@@ -5,14 +5,16 @@
 #include "Controller.h"
 #include "../Model/Mayor13.h"
 #include "../Model/DosColores.h"
+#include "../Model/guessnum.h"
+#include "../Model/randmath.h"
 
 Controller::Controller() {
     this->casino = Casino();
     // Se agregan los juegos disponibles para el casino
-    Mayor13* juego1 = new Mayor13();
-    DosColores* juego2 = new DosColores();
-    GuessNum* juego3 = new GuessNum();
-    RandMath* juego4 = new RandMath();
+    Mayor13* juego1 = new Mayor13("Mayor13");
+    DosColores* juego2 = new DosColores("DosColores");
+    GuessNum* juego3 = new GuessNum("Adivina el numero");
+    RandMath* juego4 = new RandMath("Mates locas");
     casino.agregarJuego(juego1);
     casino.agregarJuego(juego2);
     casino.agregarJuego(juego3);
@@ -22,8 +24,10 @@ Controller::Controller() {
 void Controller::mostrarJuegos(){
     vector<Juego*> gamePool( casino.consultarJuegos() );
     int i = 1;
-    for( auto it = gamePool.begin(); it != gamePool.end(); ++it, ++i)
-        cout << i << ". " << (*it)->getName() << endl;
+    for( auto it = gamePool.begin(); it != gamePool.end(); ++it, ++i){
+        Juego* game = *it;
+        cout << i << ". " << game->getName() << endl;
+    }
     cout << endl;
 }
 
@@ -35,7 +39,7 @@ void Controller::agregarJugador(long id, string nombreJugador, double dinero)
         //float cantGonzos = casino.convertirPesosAGonzos(dinero);
         Jugador* pJugador = new Jugador(id, nombreJugador, 0.0);
         casino.agregarJugador(pJugador);
-        recargarGonzos( id, casino.convertirPesosAGonzos(dinero) );
+        recargarGonzos( id, dinero );
     }else {
         throw std::domain_error("El jugador con la identificacion recibida ya existe\n");
     }
@@ -51,23 +55,23 @@ bool Controller::jugar(int idJuego, long idJugador, float gonzosApostar) {
     if (verPuedeContinuar(idJugador)== false){
         throw std::domain_error("No tienes saldo suficiente para jugar\n");
     }
+    if(!verPuedeContinuar(idJugador, gonzosApostar)){
+        throw std::domain_error("No tienes saldo suficiente para jugar\n");   
+    }
     // Si no hay errores se inicia el juego
-    int posJuego = idJuego - 1; // Se corrige la posicion para acceder al juego
-    Juego* pJuegoAJugar = casino.consultarJuegos().at(idJuego-1);
+    Juego* pJuegoAJugar = casino.consultarJuegos().at(idJuego - 1);
 
     // Consulta al jugador, consulta los gonzos iniciales, juega y obtiene el resultado
     Jugador* player = casino.consultarJugador(idJugador);    
     player->mostrarInfo();
-    int gonzos2play;
-    cout << "Digite la cantidad de gonzos a apostar: ";
-    cin >> gonzos2play;
-    if ( gonzos2play > player->getCantGonzos() ){
+    
+    if ( gonzosApostar > player->getCantGonzos() ){
         throw std::domain_error("No tienes saldo suficiente para jugar\n");
     }
     // Actualiza el saldo del jugador con el resultado
     float gonzosBefore = player->getCantGonzos();
-    player->actualizarGonzos(-gonzos2play);
-    float balanceApuesta = pJuegoAJugar->jugar(gonzos2play);
+    player->actualizarGonzos(-gonzosApostar);
+    float balanceApuesta = pJuegoAJugar->jugar(gonzosApostar);
     player->actualizarGonzos(balanceApuesta);
 
     // Actualiza la cantidad de juegos jugados
@@ -99,28 +103,37 @@ bool Controller::verPuedeContinuar(int idJugador) {
     return true;
 }
 
+bool Controller::verPuedeContinuar(int idJugador, int gonzosApostados){
+    if (casino.verExisteJugador(idJugador) == false) {
+        throw std::domain_error("El jugador con la identificacion recibida NO existe");
+    }
+    Jugador *pJugador = casino.consultarJugador(idJugador);
+    if (pJugador->getCantGonzos() < gonzosApostados) return false;
+    return true;
+}
+
 void Controller::retirarJugador(long idJugador) {
     if (casino.verExisteJugador(idJugador) == false){
         throw std::domain_error("El jugador con la identificacion recibida NO existe\n");
     }
     try{
         Jugador* player = casino.consultarJugador(idJugador);
+        player->mostrarInfo();
+        casino.retirarJugador(idJugador);
     } catch(std::domain_error ex){
         cout << "ERROR: " << ex.what() << endl;
         throw std::domain_error("Eliminacion fallida\n");
     }
-    pJugador->mostrarInfo();
-    casino.retirarJugador(idJugador);
 }
 
 void Controller::recargarGonzos(long idJugador, float cash) {
     try{
         Jugador* player = casino.consultarJugador(idJugador);
+        player->actualizarGonzos( casino.convertirPesosAGonzos(cash) );
     } catch(std::domain_error ex){
         cout << "ERROR: " << ex.what() << endl;
         throw std::domain_error("Recarga fallida\n");
     }
-    player->actualizarGonzos( casino.convertirPesosAGonzos(cash) );
 }
 
 void Controller::recargarGonzos(long idJugador, float cash, bool bonus)
@@ -129,16 +142,14 @@ void Controller::recargarGonzos(long idJugador, float cash, bool bonus)
     int random = numli + rand() % (numls + 1);
     try{
         Jugador* player = casino.consultarJugador(idJugador);
+        if( random > win_limit )
+            player->actualizarGonzos( casino.convertirPesosAGonzos(2.0*cash) );
+        else 
+            player->actualizarGonzos( casino.convertirPesosAGonzos(cash) );
     } catch(std::domain_error ex){
         cout << "ERROR: " << ex.what() << endl;
         throw std::domain_error("Recarga fallida\n");
     }
-    if( random > win_limit )
-        player->actualizarGonzos( casino.convertirPesosAGonzos(2.0*cash) );
-    else 
-        player->actualizarGonzos( casino.convertirPesosAGonzos(cash) );
 }
 
-Controller::~Controller(){
-    delete(&casino.consultarJuegos());
-}
+Controller::~Controller() {}

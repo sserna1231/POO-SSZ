@@ -30,8 +30,6 @@ float GuessNum::jugar(float gonzosApostar)
         ++t;
     }while( t <= tries && win == false );
     cout << "El numero es: " << numRandom << endl;
-    if( win == false )
-        cout << "Mejor suerte para la proxima\n";
 
     float gonzosResultado = calcularResultado(gonzosApostar);
     return gonzosResultado;

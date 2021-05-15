@@ -34,9 +34,10 @@ public:
     void agregarJugador(long id, string nombreJugador, double dinero);
     bool jugar(int idJuego, long idJugador, float gonzosApostar);
     bool verPuedeContinuar(int idJugador); // True si tiene saldo para jugar, false en caso contrario
+    bool verPuedeContinuar(int idJugador, int gonzosApostados); // Verifica si es suficiente el saldo
     void verInfoJugador(long idJugador);
     void retirarJugador(long idJugador);
     void recargarGonzos(long idJugador, float cash);
-    void recargarGonzos(long idJugador, float cash, bool bonus=false);
+    void recargarGonzos(long idJugador, float cash, bool bonus);
 };
 #endif //CASINO_CONTROLLER_H

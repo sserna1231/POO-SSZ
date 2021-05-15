@@ -4,6 +4,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
+#include "Juego.h"
 
 using std::cin;
 using std::cout;
